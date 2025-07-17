@@ -17,3 +17,14 @@ app.use(morgan("common"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors());
+
+//routes
+app.get("/", (req, res) => {
+  res.send("this is the home route");
+});
+
+//server
+const port = process.env.PORT || 3002;
+app.listen(port, () => {
+  console.log(`listening on port ${port}`);
+});

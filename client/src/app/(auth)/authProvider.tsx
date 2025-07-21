@@ -4,6 +4,8 @@ import { Amplify } from "aws-amplify";
 import {
   Authenticator,
   Heading,
+  Radio,
+  RadioGroupField,
   useAuthenticator,
   View,
 } from "@aws-amplify/ui-react";
@@ -94,17 +96,43 @@ const components = {
       );
     },
   },
-  //   SignUp: {
-  //    FormFields() {
-  //       const {validationErrors} = useAuthenticator();
+  SignUp: {
+    FormFields() {
+      const { validationErrors } = useAuthenticator();
 
-  //       return (
-  //          <>
-
-  //          </>
-  //       )
-  //    }
-  //   }
+      return (
+        <>
+          <Authenticator.SignUp.FormFields />
+          <RadioGroupField
+            legend="Role"
+            name="custom:role"
+            errorMessage={validationErrors["custom:role"]}
+            hasError={!!validationErrors["custom:role"]}
+            isRequired
+          >
+            <Radio value="tenant">Tenant</Radio>
+            <Radio value="manager">Manager</Radio>
+          </RadioGroupField>
+        </>
+      );
+    },
+    Footer() {
+      const { toSignIn } = useAuthenticator();
+      return (
+        <View className="text-center mt-4">
+          <p className="text-muted-foreground">
+            Don&apos;t have an account?{" "}
+            <button
+              onClick={toSignIn}
+              className="text-primary hover:underline bg-transparent border-none p-0 "
+            >
+              Sign in
+            </button>
+          </p>
+        </View>
+      );
+    },
+  },
 };
 
 const Auth = ({ children }: { children: React.ReactNode }) => {

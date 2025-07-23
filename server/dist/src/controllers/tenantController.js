@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getTenant = void 0;
+exports.createTenant = exports.getTenant = void 0;
 const client_1 = require("@prisma/client");
 const prisma = new client_1.PrismaClient();
 const getTenant = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -36,3 +36,22 @@ const getTenant = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.getTenant = getTenant;
+const createTenant = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { cognitoId, name, email, phoneNumber } = req.body;
+        const tenant = yield prisma.tenant.create({
+            data: {
+                cognitoId: cognitoId,
+                name: name,
+                email: email,
+                phoneNumber: phoneNumber,
+            },
+        });
+        res.status(201).json(tenant);
+    }
+    catch (error) {
+        console.error("Error creating tenant:", error);
+        res.status(500).json({ message: `Error creating tenant ${error.message}` });
+    }
+});
+exports.createTenant = createTenant;

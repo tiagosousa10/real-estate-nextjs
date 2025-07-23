@@ -20,7 +20,7 @@ export const api = createApi({
   tagTypes: [],
   endpoints: (build) => ({
     getAuthUser: build.query<User, void>({
-      queryFn: async (_, _queryApi, _extraOptions, fetchWithBQ) => {
+      queryFn: async (_, _queryApi, _extraoptions, fetchWithBQ) => {
         try {
           const session = await fetchAuthSession();
           const { idToken } = session.tokens ?? {};
@@ -29,12 +29,25 @@ export const api = createApi({
 
           const endpoint =
             userRole === "manager"
-              ? `managers/${user.userId}`
-              : `tenants/${user.userId}`;
+              ? `/managers/${user.userId}`
+              : `/tenants/${user.userId}`;
 
-          const userDetailsResponse = await fetchWithBQ(endpoint);
+          // eslint-disable-next-line prefer-const
+          let userDetailsResponse = await fetchWithBQ(endpoint);
 
-          //if the user is not found in the database, create a new user
+          // if user doesn't exist, create new user
+          // if (
+          //   userDetailsResponse.error &&
+          //   userDetailsResponse.error.status === 404
+          // ) {
+          //   userDetailsResponse = await createNewUserInDatabase(
+          //     user,
+          //     idToken,
+          //     userRole,
+          //     fetchWithBQ
+          //   );
+          // }
+
           return {
             data: {
               cognitoInfo: { ...user },
@@ -42,8 +55,9 @@ export const api = createApi({
               userRole,
             },
           };
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (error: any) {
-          return { error: error.message, data: "Failed to fetch user details" };
+          return { error: error.message || "Could not fetch user data" };
         }
       },
     }),

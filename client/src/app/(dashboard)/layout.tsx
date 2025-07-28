@@ -1,5 +1,5 @@
 import Navbar from "@/components/Navbar";
-import { SidebarProvider } from "@/components/ui/sidebar";
+import { Sidebar, SidebarProvider } from "@/components/ui/sidebar";
 import { NAVBAR_HEIGHT } from "@/lib/constants";
 import React from "react";
 

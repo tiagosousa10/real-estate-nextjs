@@ -73,7 +73,23 @@ export const api = createApi({
       }),
       invalidatesTags: (result) => [{ type: "Tenants", id: result?.id }],
     }),
+
+    updateManagerSettings: build.mutation<
+      Manager,
+      { cognitoId: string } & Partial<Manager>
+    >({
+      query: ({ cognitoId, ...updateManager }) => ({
+        url: `/managers/${cognitoId}`,
+        method: "PUT",
+        body: updateManager,
+      }),
+      invalidatesTags: (result) => [{ type: "Managers", id: result?.id }],
+    }),
   }),
 });
 
-export const { useGetAuthUserQuery, useUpdateTenantSettingsMutation } = api;
+export const {
+  useGetAuthUserQuery,
+  useUpdateTenantSettingsMutation,
+  useUpdateManagerSettingsMutation,
+} = api;

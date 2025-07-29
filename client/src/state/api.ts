@@ -66,10 +66,10 @@ export const api = createApi({
       Tenant,
       { cognitoId: string } & Partial<Tenant>
     >({
-      query: ({ cognitoId, ...updateTenant }) => ({
-        url: `/tenants/${cognitoId}`,
+      query: ({ cognitoId, ...updatedTenant }) => ({
+        url: `tenants/${cognitoId}`,
         method: "PUT",
-        body: updateTenant,
+        body: updatedTenant,
       }),
       invalidatesTags: (result) => [{ type: "Tenants", id: result?.id }],
     }),
@@ -78,10 +78,10 @@ export const api = createApi({
       Manager,
       { cognitoId: string } & Partial<Manager>
     >({
-      query: ({ cognitoId, ...updateManager }) => ({
-        url: `/managers/${cognitoId}`,
+      query: ({ cognitoId, ...updatedManager }) => ({
+        url: `managers/${cognitoId}`,
         method: "PUT",
-        body: updateManager,
+        body: updatedManager,
       }),
       invalidatesTags: (result) => [{ type: "Managers", id: result?.id }],
     }),

@@ -9,23 +9,23 @@ import React from "react";
 
 const TenantSettings = () => {
   const { data: authUser, isLoading } = useGetAuthUserQuery();
-  console.log("🚀 ~ TenantSettings ~ authUser:", authUser);
   const [updateTenant] = useUpdateTenantSettingsMutation();
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <>Loading...</>;
 
   const initialData = {
     name: authUser?.userInfo.name,
     email: authUser?.userInfo.email,
-    phone: authUser?.userInfo.phone,
+    phoneNumber: authUser?.userInfo.phoneNumber,
   };
 
   const handleSubmit = async (data: typeof initialData) => {
     await updateTenant({
-      cognitoId: authUser?.cognitoInfo.userId,
+      cognitoId: authUser?.cognitoInfo?.userId,
       ...data,
     });
   };
+
   return (
     <SettingsForm
       initialData={initialData}

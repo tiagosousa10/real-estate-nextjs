@@ -83,12 +83,8 @@ export const getManagerProperties = async (
 ): Promise<void> => {
   try {
     const { cognitoId } = req.params;
-
-
     const properties = await prisma.property.findMany({
-      where: {
-        managerCognitoId: cognitoId,
-      },
+      where: { managerCognitoId: cognitoId },
       include: {
         location: true,
       },
@@ -97,30 +93,29 @@ export const getManagerProperties = async (
     const propertiesWithFormattedLocation = await Promise.all(
       properties.map(async (property) => {
         const coordinates: { coordinates: string }[] =
-        await prisma.$queryRaw`SELECT ST_asText(coordinates) as coordinates from "Location" where id = ${property.location.id}`;
+          await prisma.$queryRaw`SELECT ST_asText(coordinates) as coordinates from "Location" where id = ${property.location.id}`;
 
-      // Convert WKT to GeoJSON
-      const geoJSON: any = wktToGeoJSON(coordinates[0]?.coordinates || "");
-      const longitude = geoJSON.coordinates[0];
-      const latitude = geoJSON.coordinates[1];
+        const geoJSON: any = wktToGeoJSON(coordinates[0]?.coordinates || "");
+        const longitude = geoJSON.coordinates[0];
+        const latitude = geoJSON.coordinates[1];
 
-      // Add the coordinates to the property
-      const propertyWithCoordinates = {
-        ...property,
-        location: {
-          ...property.location,
-          coordinates: {
-            longitude,
-            latitude,
+        return {
+          ...property,
+          location: {
+            ...property.location,
+            coordinates: {
+              longitude,
+              latitude,
+            },
           },
+        };
       })
-    )
+    );
 
-      res.json(propertiesWithFormattedLocation);
-    
-  } catch (error: any) {
+    res.json(propertiesWithFormattedLocation);
+  } catch (err: any) {
     res
       .status(500)
-      .json({ message: `Error retrieving manager properties: ${error.message}` });
+      .json({ message: `Error retrieving manager properties: ${err.message}` });
   }
 };

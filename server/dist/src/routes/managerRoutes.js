@@ -8,5 +8,6 @@ const managerController_1 = require("../controllers/managerController");
 const router = express_1.default.Router();
 router.get("/:cognitoId", managerController_1.getManager);
 router.put("/:cognitoId", managerController_1.updateManager);
+router.get("/:cognitoId/properties", managerController_1.getManagerProperties);
 router.post("/", managerController_1.createManager);
 exports.default = router;

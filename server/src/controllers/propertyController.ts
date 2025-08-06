@@ -1,8 +1,13 @@
 import { Request, Response } from "express";
-import { Prisma, PrismaClient } from "@prisma/client";
+import { Prisma, PrismaClient, PropertyType } from "@prisma/client";
 import { wktToGeoJSON } from "@terraformer/wkt";
+import { S3Client } from "@aws-sdk/client-s3";
+import { Upload } from "@aws-sdk/lib-storage";
 
 const prisma = new PrismaClient();
+const s3Client = new S3Client({
+  region: process.env.AWS_REGION,
+});
 
 export const getProperties = async (
   req: Request,
@@ -183,5 +188,45 @@ export const getProperty = async (
     res
       .status(500)
       .json({ message: `Error retrieving property: ${error.message}` });
+  }
+};
+
+export const createProperty = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const files = req.files as Express.Multer.File[];
+    const {
+      address,
+      city,
+      state,
+      country,
+      postalCode,
+      managerCognitoId,
+      ...PropertyData
+    } = req.body;
+
+    const photoUrls = await Promise.all(
+      files.map(async (file) => {
+        const uploadParams = {
+          Bucket: process.env.S3_BUCKET_NAME!,
+          Key: `properties/${Date.now()}-${file.originalname}`,
+          Body: file.buffer,
+          ContentType: file.mimetype,
+        };
+
+        const uploadResult = await new Upload({
+          client: s3Client,
+          params: uploadParams,
+        }).done();
+
+        return uploadResult.Location;
+      })
+    );
+  } catch (error: any) {
+    res
+      .status(500)
+      .json({ message: `Error creating property: ${error.message}` });
   }
 };

@@ -8,11 +8,27 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __rest = (this && this.__rest) || function (s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+                t[p[i]] = s[p[i]];
+        }
+    return t;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getProperty = exports.getProperties = void 0;
+exports.createProperty = exports.getProperty = exports.getProperties = void 0;
 const client_1 = require("@prisma/client");
 const wkt_1 = require("@terraformer/wkt");
+const client_s3_1 = require("@aws-sdk/client-s3");
+const lib_storage_1 = require("@aws-sdk/lib-storage");
 const prisma = new client_1.PrismaClient();
+const s3Client = new client_s3_1.S3Client({
+    region: process.env.AWS_REGION,
+});
 const getProperties = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { favoriteIds, priceMin, priceMax, beds, baths, propertyType, squareFeetMin, squareFeetMax, amenities, availableFrom, latitude, longitude, } = req.query;
@@ -135,3 +151,28 @@ const getProperty = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     }
 });
 exports.getProperty = getProperty;
+const createProperty = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const files = req.files;
+        const _a = req.body, { address, city, state, country, postalCode, managerCognitoId } = _a, PropertyData = __rest(_a, ["address", "city", "state", "country", "postalCode", "managerCognitoId"]);
+        const photoUrls = yield Promise.all(files.map((file) => __awaiter(void 0, void 0, void 0, function* () {
+            const uploadParams = {
+                Bucket: process.env.S3_BUCKET_NAME,
+                Key: `properties/${Date.now()}-${file.originalname}`,
+                Body: file.buffer,
+                ContentType: file.mimetype,
+            };
+            const uploadResult = yield new lib_storage_1.Upload({
+                client: s3Client,
+                params: uploadParams,
+            }).done();
+            return uploadResult.Location;
+        })));
+    }
+    catch (error) {
+        res
+            .status(500)
+            .json({ message: `Error creating property: ${error.message}` });
+    }
+});
+exports.createProperty = createProperty;

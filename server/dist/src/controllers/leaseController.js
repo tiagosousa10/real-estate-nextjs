@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getLeases = void 0;
+exports.getLeasePayments = exports.getLeases = void 0;
 const client_1 = require("@prisma/client");
 const prisma = new client_1.PrismaClient();
 const getLeases = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -28,3 +28,21 @@ const getLeases = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.getLeases = getLeases;
+const getLeasePayments = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { id } = req.params;
+        const payments = yield prisma.payment.findMany({
+            where: {
+                leaseId: Number(id),
+            },
+        });
+        res.json(payments);
+    }
+    catch (error) {
+        console.error("Error getting lease payments:", error);
+        res
+            .status(500)
+            .json({ message: `Error getting lease payments ${error.message}` });
+    }
+});
+exports.getLeasePayments = getLeasePayments;

@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createApplication = exports.listApplications = void 0;
+exports.updateApplicationStatus = exports.createApplication = exports.listApplications = void 0;
 const client_1 = require("@prisma/client");
 const prisma = new client_1.PrismaClient();
 const listApplications = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -149,3 +149,92 @@ const createApplication = (req, res) => __awaiter(void 0, void 0, void 0, functi
     }
 });
 exports.createApplication = createApplication;
+const updateApplicationStatus = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { id } = req.params;
+        const { status } = req.body;
+        const application = yield prisma.application.findUnique({
+            where: {
+                id: Number(id),
+            },
+            include: {
+                property: true,
+                tenant: true,
+            },
+        });
+        if (!application) {
+            res.status(404).json({ message: "Application not found" });
+            return;
+        }
+        if (status == "approved") {
+            const newLease = yield prisma.lease.create({
+                data: {
+                    startDate: new Date(),
+                    endDate: new Date(new Date().setFullYear(new Date().getFullYear() + 1)),
+                    rent: application.property.pricePerMonth,
+                    deposit: application.property.securityDeposit,
+                    propertyId: application.propertyId,
+                    tenantCognitoId: application.tenantCognitoId,
+                },
+            });
+            //update the property to connect the tenant
+            yield prisma.property.update({
+                where: {
+                    id: application.propertyId,
+                },
+                data: {
+                    tenants: {
+                        connect: {
+                            cognitoId: application.tenantCognitoId,
+                        },
+                    },
+                },
+            });
+            //update the application with new lease ID
+            yield prisma.application.update({
+                where: {
+                    id: Number(id),
+                },
+                data: {
+                    status,
+                    leaseId: newLease.id,
+                },
+                include: {
+                    property: true,
+                    tenant: true,
+                    lease: true,
+                },
+            });
+        }
+        else {
+            //update the application status to rejected ("Denied")
+            yield prisma.application.update({
+                where: {
+                    id: Number(id),
+                },
+                data: {
+                    status,
+                },
+            });
+        }
+        //respond with the updated application details
+        const updateApplication = yield prisma.application.findUnique({
+            where: {
+                id: Number(id),
+            },
+            include: {
+                property: true,
+                tenant: true,
+                lease: true,
+            },
+        });
+        res.status(200).json(updateApplication);
+    }
+    catch (error) {
+        console.error("Error updating application status:", error);
+        res
+            .status(500)
+            .json({ message: `Error updating application status ${error.message}` });
+    }
+});
+exports.updateApplicationStatus = updateApplicationStatus;

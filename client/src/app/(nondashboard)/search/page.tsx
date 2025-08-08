@@ -16,7 +16,6 @@ const SearchPage = () => {
       className="w-full mx-auto px-5 flex flex-col"
       style={{
         height: `calc(100vh - ${NAVBAR_HEIGHT}px)`,
-        marginTop: `${NAVBAR_HEIGHT}px`,
       }}
     >
       <FiltersBar />

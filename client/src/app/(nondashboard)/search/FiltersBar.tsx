@@ -4,9 +4,17 @@ import { usePathname, useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { debounce } from "lodash";
-import { cleanParams, cn } from "@/lib/utils";
+import { cleanParams, cn, formatPriceValue } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Filter } from "lucide-react";
+import { Filter, Search } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const FiltersBar = () => {
   const dispatch = useDispatch();
@@ -76,6 +84,47 @@ const FiltersBar = () => {
           <Filter className="size-4" />
           <span>All Filters</span>
         </Button>
+
+        {/* search location */}
+        <div className="flex items-center">
+          <Input
+            placeholder="Search Location"
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+            className="w-40 rounded-l-xl rounded-r-none border-primary-400 border-r-0"
+          />
+          <Button
+            // onClick={handleLocationSearch}
+            className="rounded-r-xl rounded-l-none border-l-none border-primary-400 shadow-none border hover:bg-primary-700 hover:text-primary-50"
+          >
+            <Search className="size-4" />
+          </Button>
+        </div>
+
+        {/* price range */}
+        <div className="flex gap-1">
+          {/* minimum price selector */}
+          <Select
+            value={filters.priceRange[0]?.toString() || "any"}
+            onValueChange={(value) =>
+              handleFilterChange("priceRange", value, true)
+            }
+          >
+            <SelectTrigger className="w-22 rounded-xl border-primary-400">
+              <SelectValue>
+                {formatPriceValue(filters.priceRange[0], true)}
+              </SelectValue>
+            </SelectTrigger>
+            <SelectContent className="bg-white">
+              <SelectItem value="any">Any Min Price</SelectItem>
+              {[500, 1000, 1500, 2000, 3000, 5000, 10000].map((price) => (
+                <SelectItem key={price} value={price.toString()}>
+                  ${price / 1000}k+
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
       </div>
     </div>
   );

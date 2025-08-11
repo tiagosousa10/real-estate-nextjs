@@ -124,6 +124,65 @@ const FiltersBar = () => {
               ))}
             </SelectContent>
           </Select>
+
+          {/* maximum price selector */}
+          <Select
+            value={filters.priceRange[0]?.toString() || "any"}
+            onValueChange={(value) =>
+              handleFilterChange("priceRange", value, false)
+            }
+          >
+            <SelectTrigger className="w-22 rounded-xl border-primary-400">
+              <SelectValue>
+                {formatPriceValue(filters.priceRange[1], false)}
+              </SelectValue>
+            </SelectTrigger>
+            <SelectContent className="bg-white">
+              <SelectItem value="any">Any Max Price</SelectItem>
+              {[1000, 2000, 3000, 5000, 10000].map((price) => (
+                <SelectItem key={price} value={price.toString()}>
+                  &lt;${price / 1000}k
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        {/* beds and baths  */}
+        <div className="flex gap-1">
+          {/* beds*/}
+          <Select
+            value={filters.beds}
+            onValueChange={(value) => handleFilterChange("beds", value, null)}
+          >
+            <SelectTrigger className="w-26 rounded-xl border-primary-400">
+              <SelectValue placeholder="Beds" />
+            </SelectTrigger>
+            <SelectContent className="bg-white">
+              <SelectItem value="any">Any Beds</SelectItem>
+              <SelectItem value="1">1+ bed</SelectItem>
+              <SelectItem value="2">2+ beds</SelectItem>
+              <SelectItem value="3">3+ beds</SelectItem>
+              <SelectItem value="4">4+ beds</SelectItem>
+            </SelectContent>
+          </Select>
+
+          {/* baths */}
+          <Select
+            value={filters.baths}
+            onValueChange={(value) => handleFilterChange("baths", value, null)}
+          >
+            <SelectTrigger className="w-26 rounded-xl border-primary-400">
+              <SelectValue placeholder="Baths" />
+            </SelectTrigger>
+            <SelectContent className="bg-white">
+              <SelectItem value="any">Any baths</SelectItem>
+              <SelectItem value="1">1+ bath</SelectItem>
+              <SelectItem value="2">2+ baths</SelectItem>
+              <SelectItem value="3">3+ baths</SelectItem>
+              <SelectItem value="4">4+ baths</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
       </div>
     </div>

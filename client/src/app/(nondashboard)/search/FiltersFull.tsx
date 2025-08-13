@@ -10,6 +10,13 @@ import { Button } from "@/components/ui/button";
 import { Search } from "lucide-react";
 import { PropertyTypeIcons } from "@/lib/constants";
 import { Slider } from "@/components/ui/slider";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const FiltersFull = () => {
   const dispatch = useDispatch();
@@ -126,6 +133,53 @@ const FiltersFull = () => {
             <span>${localFilters.priceRange[1] ?? 10000}</span>
           </div>
         </div>
+
+        {/* beds and baths */}
+        <div className="flex gap-4">
+          <div className="flex-1">
+            <h4 className="font-bold mb-2">Beds</h4>
+            <Select
+              value={localFilters.beds || "any"}
+              onValueChange={(value) =>
+                setLocalFilters((prev) => ({ ...prev, beds: value }))
+              }
+            >
+              <SelectTrigger className="w-full rounded-xl">
+                <SelectValue placeholder="Beds" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="any">Any beds</SelectItem>
+                <SelectItem value="1">1+ bed</SelectItem>
+                <SelectItem value="2">2+ beds</SelectItem>
+                <SelectItem value="3">3+ beds</SelectItem>
+                <SelectItem value="4">4+ beds</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="flex-1">
+            <h4 className="font-bold mb-2">Baths</h4>
+            <Select
+              value={localFilters.baths || "any"}
+              onValueChange={(value) =>
+                setLocalFilters((prev) => ({ ...prev, baths: value }))
+              }
+            >
+              <SelectTrigger className="w-full rounded-xl">
+                <SelectValue placeholder="Baths" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="any">Any baths</SelectItem>
+                <SelectItem value="1">1+ bath</SelectItem>
+                <SelectItem value="2">2+ baths</SelectItem>
+                <SelectItem value="3">3+ baths</SelectItem>
+                <SelectItem value="4">4+ baths</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+        {/* square feet */}
+        <div></div>
       </div>
     </div>
   );

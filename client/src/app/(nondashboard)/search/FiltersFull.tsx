@@ -8,8 +8,8 @@ import { cleanParams, cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search } from "lucide-react";
-import { PropertyType } from "@/types/prismaTypes";
 import { PropertyTypeIcons } from "@/lib/constants";
+import { Slider } from "@/components/ui/slider";
 
 const FiltersFull = () => {
   const dispatch = useDispatch();
@@ -99,6 +99,31 @@ const FiltersFull = () => {
                 <span>{type}</span>
               </div>
             ))}
+          </div>
+        </div>
+
+        {/* price range */}
+        <div>
+          <h4 className="font-bold mb-2">Price Range (Monthly)</h4>
+          <Slider
+            min={0}
+            max={10000}
+            step={100}
+            value={[
+              localFilters.priceRange[0] ?? 0,
+              localFilters.priceRange[1] ?? 10000,
+            ]}
+            onValueChange={(value: any) =>
+              setLocalFilters((prev) => ({
+                ...prev,
+                priceRange: value as [number, number],
+              }))
+            }
+          />
+
+          <div className="flex justify-between mt-2">
+            <span>${localFilters.priceRange[0] ?? 0}</span>
+            <span>${localFilters.priceRange[1] ?? 10000}</span>
           </div>
         </div>
       </div>

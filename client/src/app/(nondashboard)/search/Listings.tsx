@@ -1,3 +1,4 @@
+import Card from "@/components/Card";
 import {
   useAddFavoritePropertieMutation,
   useGetAuthUserQuery,
@@ -5,6 +6,7 @@ import {
   useRemoveFavoritePropertieMutation,
 } from "@/state/api";
 import { useAppSelector } from "@/state/redux";
+import { Property } from "@/types/prismaTypes";
 import React from "react";
 
 const Listings = () => {
@@ -55,7 +57,24 @@ const Listings = () => {
       <div className="flex">
         <div className="p-4 w-full">
           {properties?.map((property) =>
-            viewMode === "grid" ? <>some card</> : <>another cards</>
+            viewMode === "grid" ? (
+              <Card
+                key={property.id}
+                property={property}
+                isFavorite={
+                  authUser?.userInfo.favorites.some(
+                    (fav: Property) => fav.id === property.id
+                  ) || false
+                }
+                onFavoriteToggle={() => handleFavoriteToggle(property.id)}
+                showFavoriteButton={!!authUser}
+                propertyLink={`
+                  /search/${property.id}
+                `}
+              />
+            ) : (
+              <>another cards</>
+            )
           )}
         </div>
       </div>

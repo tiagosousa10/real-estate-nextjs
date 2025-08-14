@@ -1,5 +1,6 @@
-import { Heart } from "lucide-react";
+import { Bath, Bed, Heart, House, Star } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import React from "react";
 
 const Card = ({
@@ -49,6 +50,60 @@ const Card = ({
             />
           </button>
         )}
+
+        <div className="p-4">
+          <h2 className="text-xl font-bold m-1">
+            {propertyLink ? (
+              <Link
+                href={propertyLink}
+                className="hover:underline hover:text-blue-600"
+                scroll={false}
+              >
+                {property.name}
+              </Link>
+            ) : (
+              property.name
+            )}
+          </h2>
+          <p>
+            {property?.location?.address}, {property?.location?.city},{" "}
+          </p>
+          <div className="flex justify-between items-center">
+            <div className="flex items-center mb-2">
+              <Star className="size-4 text-yellow-400 mr-1" />
+              <span className="font-semibold">
+                {property.averageRating?.toFixed(1)}
+              </span>
+              <span className="text-gray-600 ml-1">
+                ({property.numberOfReviews} Reviews)
+              </span>
+            </div>
+            <p className="text-lg font-bold mb-3">
+              ${property.pricePerMonth.toFixed(0)}{" "}
+              <span className="text-gray-600 font-normal text-base">
+                {" "}
+                /month
+              </span>
+            </p>
+          </div>
+          <hr />
+
+          <div className="flex justify-between items-center gap-4 text-gray-600 mt-5">
+            <span className="flex items-center">
+              <Bed className="size-5 mr-2" />
+              {property.beds} Beds
+            </span>
+            <span className="flex items-center">
+              <Bath className="size-5 mr-2" />
+              {property.baths} Baths
+            </span>
+
+            <span className="flex items-center">
+              <House className="size-5 mr-2" />
+              {property.squareFeet} sq ft
+            </span>
+          </div>
+        </div>
       </div>
     </div>
   );

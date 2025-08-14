@@ -63,18 +63,6 @@ export const api = createApi({
       },
     }),
 
-    updateTenantSettings: build.mutation<
-      Tenant,
-      { cognitoId: string } & Partial<Tenant>
-    >({
-      query: ({ cognitoId, ...updatedTenant }) => ({
-        url: `tenants/${cognitoId}`,
-        method: "PUT",
-        body: updatedTenant,
-      }),
-      invalidatesTags: (result) => [{ type: "Tenants", id: result?.id }],
-    }),
-
     updateManagerSettings: build.mutation<
       Manager,
       { cognitoId: string } & Partial<Manager>
@@ -121,6 +109,19 @@ export const api = createApi({
     }),
 
     //tenant related endpoints
+
+    updateTenantSettings: build.mutation<
+      Tenant,
+      { cognitoId: string } & Partial<Tenant>
+    >({
+      query: ({ cognitoId, ...updatedTenant }) => ({
+        url: `tenants/${cognitoId}`,
+        method: "PUT",
+        body: updatedTenant,
+      }),
+      invalidatesTags: (result) => [{ type: "Tenants", id: result?.id }],
+    }),
+
     addFavoritePropertie: build.mutation<
       Tenant,
       { cognitoId: string; propertyId: number }
@@ -169,4 +170,6 @@ export const {
   useUpdateTenantSettingsMutation,
   useUpdateManagerSettingsMutation,
   useGetPropertiesQuery,
+  useAddFavoritePropertieMutation,
+  useRemoveFavoritePropertieMutation,
 } = api;

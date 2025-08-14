@@ -119,6 +119,48 @@ export const api = createApi({
             ]
           : [{ type: "Properties", id: "LIST" }],
     }),
+
+    //tenant related endpoints
+    addFavoritePropertie: build.mutation<
+      Tenant,
+      { cognitoId: string; propertyId: number }
+    >({
+      query: ({ cognitoId, propertyId }) => ({
+        url: `tenants/${cognitoId}/favorites/${propertyId}`,
+        method: "POST",
+      }),
+      invalidatesTags: (result) => [
+        {
+          type: "Tenants",
+          id: result?.id,
+        },
+        {
+          type: "Properties",
+          id: "LIST",
+        },
+      ],
+    }),
+
+    //tenant related endpoints
+    removeFavoritePropertie: build.mutation<
+      Tenant,
+      { cognitoId: string; propertyId: number }
+    >({
+      query: ({ cognitoId, propertyId }) => ({
+        url: `tenants/${cognitoId}/favorites/${propertyId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: (result) => [
+        {
+          type: "Tenants",
+          id: result?.id,
+        },
+        {
+          type: "Properties",
+          id: "LIST",
+        },
+      ],
+    }),
   }),
 });
 

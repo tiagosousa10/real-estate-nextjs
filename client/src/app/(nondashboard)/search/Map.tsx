@@ -11,9 +11,6 @@ mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN;
 const Map = () => {
   const mapContainerRef = useRef(null);
   const filters = useAppSelector((state) => state.global.filters);
-  const isFiltersFullOpen = useAppSelector(
-    (state) => state.global.isFiltersFullOpen
-  );
 
   const {
     data: properties,
@@ -46,6 +43,9 @@ const Map = () => {
 
     return () => map.remove();
   }, []);
+
+  if (isLoading) return <div>Loading...</div>;
+  if (isError || !properties) return <div>Failed to fetch properties </div>;
 
   return (
     <div className="basis-5/12 grow relative rounded-xl">

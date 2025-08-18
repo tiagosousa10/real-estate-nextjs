@@ -10,16 +10,22 @@ export const api = createApi({
     prepareHeaders: async (headers) => {
       const session = await fetchAuthSession();
       const { idToken } = session.tokens ?? {};
-
       if (idToken) {
         headers.set("Authorization", `Bearer ${idToken}`);
       }
-
       return headers;
     },
   }),
   reducerPath: "api",
-  tagTypes: ["Managers", "Tenants", "Properties"],
+  tagTypes: [
+    "Managers",
+    "Tenants",
+    "Properties",
+    "PropertyDetails",
+    "Leases",
+    "Payments",
+    "Applications",
+  ],
   endpoints: (build) => ({
     getAuthUser: build.query<User, void>({
       queryFn: async (_, _queryApi, _extraoptions, fetchWithBQ) => {
@@ -56,7 +62,6 @@ export const api = createApi({
               userRole,
             },
           };
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (error: any) {
           return { error: error.message || "Could not fetch user data" };
         }

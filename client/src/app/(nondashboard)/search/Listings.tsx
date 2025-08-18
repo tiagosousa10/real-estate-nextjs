@@ -22,12 +22,13 @@ const Listings = () => {
     isLoading,
     isError,
   } = useGetPropertiesQuery(filters);
+  console.log("🚀 ~ Listings ~ properties:", properties);
 
   const handleFavoriteToggle = async (propertyId: number) => {
     if (!authUser) return;
 
     const isFavorite = authUser.userInfo.favorites.some(
-      (fav) => fav.id === propertyId
+      (fav: Property) => fav.id === propertyId
     );
 
     if (isFavorite) {

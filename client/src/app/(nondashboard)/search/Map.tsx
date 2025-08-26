@@ -6,18 +6,16 @@ import { useAppSelector } from "@/state/redux";
 import { useGetPropertiesQuery } from "@/state/api";
 import { Property } from "@/types/prismaTypes";
 
-mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN;
+mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN as string;
 
 const Map = () => {
   const mapContainerRef = useRef(null);
   const filters = useAppSelector((state) => state.global.filters);
-
   const {
     data: properties,
     isLoading,
     isError,
   } = useGetPropertiesQuery(filters);
-  console.log("🚀 ~ Map ~ properties:", properties);
 
   useEffect(() => {
     if (isLoading || isError || !properties) return;
@@ -33,27 +31,30 @@ const Map = () => {
       const marker = createPropertyMarker(property, map);
       const markerElement = marker.getElement();
       const path = markerElement.querySelector("path[fill='#3FB1CE']");
-      if (path) {
-        path.setAttribute("fill", "#000000");
-      }
+      if (path) path.setAttribute("fill", "#000000");
     });
 
-    const resizeMap = () => setTimeout(() => map.resize(), 700);
+    const resizeMap = () => {
+      if (map) setTimeout(() => map.resize(), 700);
+    };
     resizeMap();
 
     return () => map.remove();
   }, [isLoading, isError, properties, filters.coordinates]);
 
-  if (isLoading) return <div>Loading...</div>;
-  if (isError || !properties) return <div>Failed to fetch properties </div>;
+  if (isLoading) return <>Loading...</>;
+  if (isError || !properties) return <div>Failed to fetch properties</div>;
 
   return (
     <div className="basis-5/12 grow relative rounded-xl">
       <div
         className="map-container rounded-xl"
         ref={mapContainerRef}
-        style={{ height: "100%", width: "100%" }}
-      ></div>
+        style={{
+          height: "100%",
+          width: "100%",
+        }}
+      />
     </div>
   );
 };

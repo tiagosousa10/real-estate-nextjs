@@ -1,9 +1,9 @@
 import Card from "@/components/Card";
 import {
-  useAddFavoritePropertieMutation,
+  useAddFavoritePropertyMutation,
   useGetAuthUserQuery,
   useGetPropertiesQuery,
-  useRemoveFavoritePropertieMutation,
+  useRemoveFavoritePropertyMutation,
 } from "@/state/api";
 import { useAppSelector } from "@/state/redux";
 import { Property } from "@/types/prismaTypes";
@@ -11,11 +11,13 @@ import React from "react";
 
 const Listings = () => {
   const { data: authUser } = useGetAuthUserQuery();
+  console.log("🚀 ~ Listings ~ authUser:", authUser);
 
-  const [addFavorite] = useAddFavoritePropertieMutation();
-  const [removeFavorite] = useRemoveFavoritePropertieMutation();
+  const [addFavorite] = useAddFavoritePropertyMutation();
+  const [removeFavorite] = useRemoveFavoritePropertyMutation();
   const viewMode = useAppSelector((state) => state.global.viewMode);
   const filters = useAppSelector((state) => state.global.filters);
+  console.log("🚀 ~ Listings ~ filters:", filters);
 
   const {
     data: properties,

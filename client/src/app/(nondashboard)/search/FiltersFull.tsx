@@ -62,6 +62,28 @@ const FiltersFull = () => {
         : [...prev.amenities, amenity],
     }));
   };
+  const handleLocationSearch = async () => {
+    try {
+      const response = await fetch(
+        `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
+          localFilters.location
+        )}.json?access_token=${
+          process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN
+        }&fuzzyMatch=true`
+      );
+
+      const data = await response.json();
+      if (data.features && data.features.length > 0) {
+        const [lng, lat] = data.features[0].center;
+        setLocalFilters((prev) => ({
+          ...prev,
+          coordinates: [lng, lat],
+        }));
+      }
+    } catch (error) {
+      console.error("Error search location:", error);
+    }
+  };
 
   if (!isFiltersFullOpen) return null;
 

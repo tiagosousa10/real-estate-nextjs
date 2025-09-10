@@ -5,6 +5,7 @@ import React from "react";
 import ImagePreviews from "./ImagePreviews";
 import PropertyOverview from "./PropertyOverview";
 import PropertyDetails from "./PropertyDetails";
+import PropertyLocation from "./PropertyLocation";
 
 const SingleListing = () => {
   const { id } = useParams();

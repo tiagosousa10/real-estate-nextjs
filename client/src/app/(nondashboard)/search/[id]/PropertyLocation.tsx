@@ -1,4 +1,5 @@
 import { useGetPropertyQuery } from "@/state/api";
+import { Compass, MapPin } from "lucide-react";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import React, { useEffect, useRef } from "react";
@@ -27,10 +28,12 @@ const PropertyLocation = ({ propertyId }: PropertyLocationProps) => {
       zoom: 9,
     });
 
-    const marker = new mapboxgl.Marker().setLngLat([
-      property.location.coordinates.longitude,
-      property.location.coordinates.latitude,
-    ]);
+    const marker = new mapboxgl.Marker()
+      .setLngLat([
+        property.location.coordinates.longitude,
+        property.location.coordinates.latitude,
+      ])
+      .addTo(map);
 
     const markerElement = marker.getElement();
     const path = markerElement.querySelector("path[fill='#3FB1CE']");
@@ -49,6 +52,30 @@ const PropertyLocation = ({ propertyId }: PropertyLocationProps) => {
       <h3 className="text-xl font-semibold text-primary-800 dark:text-primary-100">
         Map and Location
       </h3>
+      <div className="flex justify-between items-center text-sm text-primary-500 mt-2">
+        <div className="flex items-center text-gray-500">
+          <MapPin className="size-4 mr-1 text-gray-700" />
+          Property Address:
+          <span className="ml-2 font-semibold text-gray-700">
+            {property.location.address || "Address not available"}
+          </span>
+        </div>
+        <a
+          href={`https://maps.google.com/?q=${encodeURIComponent(
+            property.location?.address || ""
+          )}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex justify-between items-center hover:underline gap-2 text-primary-600"
+        >
+          <Compass className="w-5 h-5" />
+          Get Directions
+        </a>
+      </div>
+      <div
+        className="relative mt-4 h-[300px] rounded-lg overflow-hidden"
+        ref={mapContainerRef}
+      />
     </div>
   );
 };

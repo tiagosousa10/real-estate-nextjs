@@ -25,7 +25,7 @@ const PropertyLocation = ({ propertyId }: PropertyLocationProps) => {
         property.location.coordinates.longitude,
         property.location.coordinates.latitude,
       ],
-      zoom: 9,
+      zoom: 14,
     });
 
     const marker = new mapboxgl.Marker()

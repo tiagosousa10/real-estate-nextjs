@@ -5,10 +5,10 @@ import {
   useGetAuthUserQuery,
   useGetLeasesQuery,
   useGetPaymentsQuery,
-  useGetPropertiesQuery,
+  useGetPropertyQuery,
 } from "@/state/api";
 import { Lease, Property } from "@/types/prismaTypes";
-import { MapPin } from "lucide-react";
+import { Download, MapPin, User } from "lucide-react";
 import { useParams } from "next/navigation";
 
 const ResidenceCard = ({
@@ -42,6 +42,45 @@ const ResidenceCard = ({
           </div>
         </div>
       </div>
+      {/* dates */}
+      <div>
+        <hr className="my-4" />
+        <div className="flex justify-between items-center">
+          <div className="xl:flex">
+            <div className="text-gray-500 mr-2">Start Date:</div>
+            <div className="font-semibold">
+              {new Date(currentLease.startDate).toLocaleDateString()}
+            </div>
+          </div>
+          <div className="border-[0.5px] border-primary-300 h-4" />
+          <div className="xl:flex">
+            <div className="text-gray-500 mr-2">End Date:</div>
+            <div className="font-semibold">
+              {new Date(currentLease.endDate).toLocaleDateString()}
+            </div>
+          </div>
+          <div className="border-[0.5px] border-primary-300 h-4" />
+          <div className="xl:flex">
+            <div className="text-gray-500 mr-2">Next Payment:</div>
+            <div className="font-semibold">
+              {new Date(currentLease.endDate).toLocaleDateString()}
+            </div>
+          </div>
+        </div>
+        <hr className="my-4" />
+      </div>
+
+      {/* buttons */}
+      <div className="flex justify-end gap-2 w-full">
+        <button className="bg-white border border-gray-300 text-gray-700 py-2 px-4 rounded-md flex items-center justify-center hover:bg-primary-700 hover:text-primary-50">
+          <User className="w-5 h-5 mr-2" />
+          Manager
+        </button>
+        <button className="bg-white border border-gray-300 text-gray-700 py-2 px-4 rounded-md flex items-center justify-center hover:bg-primary-700 hover:text-primary-50">
+          <Download className="w-5 h-5 mr-2" />
+          Download Agreement
+        </button>
+      </div>
     </div>
   );
 };
@@ -53,7 +92,8 @@ const Residence = () => {
     data: property,
     isLoading: propertyLoading,
     error: propertyError,
-  } = useGetPropertiesQuery(Number(id));
+  } = useGetPropertyQuery(Number(id));
+  console.log("🚀 ~ Residence ~ property:", property);
   const { data: leases, isLoading: leasesLoading } = useGetLeasesQuery(
     parseInt(authUser?.cognitoInfo?.userId || "0"),
     { skip: !authUser?.cognitoInfo?.userId }

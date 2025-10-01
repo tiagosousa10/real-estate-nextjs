@@ -8,6 +8,7 @@ import { PropertyTypeEnum, AmenityEnum, HighlightEnum } from "@/lib/constants";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
 import { useForm } from "react-hook-form";
+import { Button } from "@/components/ui/button";
 
 const NewProperty = () => {
   const [createProperty] = useCreatePropertyMutation();
@@ -195,6 +196,34 @@ const NewProperty = () => {
             </div>
 
             <hr className="my-6 border-gray-200" />
+            {/* Additional Information */}
+            <div className="space-y-6">
+              <h2 className="text-lg font-semibold mb-4">
+                Additional Information
+              </h2>
+              <CustomFormField name="address" label="Address" />
+              <div className="flex justify-between gap-4">
+                <CustomFormField name="city" label="City" className="w-full" />
+                <CustomFormField
+                  name="state"
+                  label="State"
+                  className="w-full"
+                />
+                <CustomFormField
+                  name="postalCode"
+                  label="Postal Code"
+                  className="w-full"
+                />
+              </div>
+              <CustomFormField name="country" label="Country" />
+            </div>
+
+            <Button
+              type="submit"
+              className="bg-primary-700 text-white w-full mt-8"
+            >
+              Create Property
+            </Button>
           </form>
         </Form>
       </div>

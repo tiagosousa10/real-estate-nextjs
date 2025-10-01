@@ -4,7 +4,7 @@ import Header from "@/components/Header";
 import { Form } from "@/components/ui/form";
 import { PropertyFormData, propertySchema } from "@/lib/schemas";
 import { useCreatePropertyMutation, useGetAuthUserQuery } from "@/state/api";
-import { PropertyTypeEnum } from "@/lib/constants";
+import { PropertyTypeEnum, AmenityEnum, HighlightEnum } from "@/lib/constants";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
 import { useForm } from "react-hook-form";
@@ -81,6 +81,7 @@ const NewProperty = () => {
                 />
               </div>
             </div>
+
             <hr className="my-6 border-gray-200" />
 
             {/* Fees */}
@@ -150,6 +151,47 @@ const NewProperty = () => {
                   }))}
                 />
               </div>
+            </div>
+
+            <hr className="my-6 border-gray-200" />
+
+            <div>
+              <h2 className="text-lg font-semibold mb-4">
+                Amenities and Highlights
+              </h2>
+              <div className="space-y-6">
+                <CustomFormField
+                  name="amenities"
+                  label="Amenities"
+                  type="select"
+                  options={Object.keys(AmenityEnum).map((amenity) => ({
+                    value: amenity,
+                    label: amenity,
+                  }))}
+                />
+                <CustomFormField
+                  name="highlights"
+                  label="Highlights"
+                  type="select"
+                  options={Object.keys(HighlightEnum).map((highlight) => ({
+                    value: highlight,
+                    label: highlight,
+                  }))}
+                />
+              </div>
+            </div>
+
+            <hr className="my-6 border-gray-200" />
+
+            {/* Photos */}
+            <div>
+              <h2 className="text-lg font-semibold mb-4">Photos</h2>
+              <CustomFormField
+                name="photoUrls"
+                label="Property Photos"
+                type="file"
+                accept="image/*"
+              />
             </div>
 
             <hr className="my-6 border-gray-200" />

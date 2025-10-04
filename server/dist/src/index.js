@@ -36,7 +36,7 @@ app.use("/leases", leaseRoutes_1.default);
 app.use("/tenants", (0, authMiddleware_1.authMiddleware)(["tenant"]), tenantRoutes_1.default);
 app.use("/managers", (0, authMiddleware_1.authMiddleware)(["manager"]), managerRoutes_1.default);
 //server
-const port = process.env.PORT || 3002;
-app.listen(port, () => {
+const port = Number(process.env.PORT) || 3002;
+app.listen(port, "0.0.0.0", () => {
     console.log(`listening on port ${port}`);
 });

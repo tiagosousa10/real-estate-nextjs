@@ -1,10 +1,11 @@
 "use client";
+
 import { CustomFormField } from "@/components/FormField";
 import Header from "@/components/Header";
 import { Form } from "@/components/ui/form";
 import { PropertyFormData, propertySchema } from "@/lib/schemas";
 import { useCreatePropertyMutation, useGetAuthUserQuery } from "@/state/api";
-import { PropertyTypeEnum, AmenityEnum, HighlightEnum } from "@/lib/constants";
+import { AmenityEnum, HighlightEnum, PropertyTypeEnum } from "@/lib/constants";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
 import { useForm } from "react-hook-form";
@@ -14,12 +15,12 @@ const NewProperty = () => {
   const [createProperty] = useCreatePropertyMutation();
   const { data: authUser } = useGetAuthUserQuery();
 
-  const form = useForm<PropertyFormData>({
+  const form = useForm({
     resolver: zodResolver(propertySchema),
     defaultValues: {
       name: "",
       description: "",
-      pricePerMonth: 100,
+      pricePerMonth: 1000,
       securityDeposit: 500,
       applicationFee: 100,
       isPetsAllowed: true,
@@ -40,7 +41,7 @@ const NewProperty = () => {
 
   const onSubmit = async (data: PropertyFormData) => {
     if (!authUser?.cognitoInfo?.userId) {
-      throw new Error("User not found");
+      throw new Error("No manager ID found");
     }
 
     const formData = new FormData();
@@ -58,12 +59,16 @@ const NewProperty = () => {
     });
 
     formData.append("managerCognitoId", authUser.cognitoInfo.userId);
+
     await createProperty(formData);
   };
 
   return (
     <div className="dashboard-container">
-      <Header title="Add New Property" subtitle="Create a new property here." />
+      <Header
+        title="Add New Property"
+        subtitle="Create a new property listing with detailed information"
+      />
       <div className="bg-white rounded-xl p-6">
         <Form {...form}>
           <form
@@ -156,6 +161,7 @@ const NewProperty = () => {
 
             <hr className="my-6 border-gray-200" />
 
+            {/* Amenities and Highlights */}
             <div>
               <h2 className="text-lg font-semibold mb-4">
                 Amenities and Highlights
@@ -196,6 +202,7 @@ const NewProperty = () => {
             </div>
 
             <hr className="my-6 border-gray-200" />
+
             {/* Additional Information */}
             <div className="space-y-6">
               <h2 className="text-lg font-semibold mb-4">
